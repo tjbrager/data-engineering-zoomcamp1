@@ -215,8 +215,9 @@ terrademo/keys
 *.json
 *.env
 .terraform/
+*.parquet
 
-Terraform
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.backup
@@ -242,4 +243,24 @@ venv/
 # VS Code / Codespaces
 .vscode/
 
-*.parquet
+# Terraform generated files and directories
+.terraform/         # Downloaded providers and module code
+*.tfstate           # Terraform state files
+*.tfstate.*         # Terraform state backup files
+.terraform.lock.hcl # Optional: if not committing lockfile to shared repo (generally it is recommended to commit this file)
+
+# Secrets and sensitive files
+*.tfvars            # Variable definition files (likely to contain sensitive data)
+*.tfvars.json       # Variable definition files in JSON format
+
+# Crash log files
+crash.log
+
+# Terraform CLI configuration files
+.terraformrc
+terraform.rc
+
+# Optional: plan files
+# If you save your plan files locally, you can ignore them with a consistent naming convention
+# e.g., *.tfplan
+*.tfplan

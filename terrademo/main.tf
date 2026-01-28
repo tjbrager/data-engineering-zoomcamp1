@@ -8,17 +8,18 @@ terraform {
 }
 
 provider "google" {
-  project = "de-course-485518"
-  region  = "us-central1"
+  credentials = file(var.credentials)
+  project     = var.project
+  region      = var.region
 }
 
 resource "google_storage_bucket" "demo-bucket" {
-  name          = "de-course-485518-terraform-bucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
-  
-    lifecycle_rule {
+
+  lifecycle_rule {
     condition {
       age = 1
     }
@@ -26,4 +27,11 @@ resource "google_storage_bucket" "demo-bucket" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location
 }
