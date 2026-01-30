@@ -236,6 +236,8 @@ venv/
 *.json
 *.key
 *.pem
+.env_encoded
+
 
 # Jupyter
 .ipynb_checkpoints/
