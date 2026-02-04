@@ -46,7 +46,7 @@ def download_file(month):
 def create_bucket(bucket_name):
     try:
         # Get bucket details
-        bucket = client.get_bucket(bucket_name)
+        # bucket = client.get_bucket(bucket_name)
 
         # Check if the bucket belongs to the current project
         project_bucket_ids = [bckt.id for bckt in client.list_buckets()]
@@ -62,7 +62,7 @@ def create_bucket(bucket_name):
 
     except NotFound:
         # If the bucket doesn't exist, create it
-        bucket = client.create_bucket(bucket_name)
+        # bucket = client.create_bucket(bucket_name)
         print(f"Created bucket '{bucket_name}'")
     except Forbidden:
         # If the request is forbidden, it means the bucket exists but you don't have access to see details
