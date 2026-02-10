@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from google.cloud import storage
 from google.api_core.exceptions import NotFound, Forbidden
 import time
-import pandas as pd
+from itertools import product
 
 
 # Change this to your bucket name
@@ -18,11 +18,10 @@ client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
 # If commented initialize client with the following
 # client = storage.Client(project='zoomcamp-mod3-datawarehouse')
 
-services = ["fhv", "green", "yellow"]
-year = ["2019", "2020"]
-init_url = "https://github.com/DataTalksClub/nyc-tlc-data/download/"
-# BASE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-"
-MONTHS = [f"{i:02d}" for i in range(1, 12)]
+SERVICES = ["fhv", "green", "yellow"]
+YEARS = ["2019", "2020"]
+init_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/"
+MONTHS = [f"{i:02d}" for i in range(8, 13)]  # 01..12
 DOWNLOAD_DIR = "."
 
 CHUNK_SIZE = 8 * 1024 * 1024
@@ -32,9 +31,9 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 bucket = client.bucket(BUCKET_NAME)
 
 
-def download_file(month):
-    url = f"{init_url}{services}/"
-    file_path = os.path.join(DOWNLOAD_DIR, f"{services}_tripdata_{year}-{month}.csv.gz")
+def download_file(month, year, service):
+    url = f"{init_url}{service}_tripdata_{year}-{month}.parquet"
+    file_path = os.path.join(DOWNLOAD_DIR, f"{service}_tripdata_{year}-{month}.parquet")
 
     try:
         print(f"Downloading {url}...")
@@ -44,14 +43,6 @@ def download_file(month):
     except Exception as e:
         print(f"Failed to download {url}: {e}")
         return None
-
-
-def read_to_parquet(file_path):
-    # read it back into a parquet file
-    df = pd.read_csv(file_path, compression="gzip")
-    file_name = file_path.replace(".csv.gz", ".parquet")
-    df.to_parquet(file_name, engine="pyarrow")
-    print(f"Parquet: {file_name}")
 
 
 def create_bucket(bucket_name):
@@ -116,8 +107,11 @@ def upload_to_gcs(file_path, max_retries=3):
 if __name__ == "__main__":
     create_bucket(BUCKET_NAME)
 
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        file_paths = list(executor.map(download_file, MONTHS))
+    # Build combinations: (month, year, service) to match download_file signature
+    combos = [(m, y, s) for (s, y, m) in product(SERVICES, YEARS, MONTHS)]
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        file_paths = list(executor.map(lambda args: download_file(*args), combos))
 
     with ThreadPoolExecutor(max_workers=4) as executor:
         executor.map(upload_to_gcs, filter(None, file_paths))  # Remove None values
