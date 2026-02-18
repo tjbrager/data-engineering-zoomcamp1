@@ -119,7 +119,6 @@ def materialize():
 
     base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/"
 
-    rows = []
     dfs = []
     now_ts = pd.Timestamp.utcnow()
 
