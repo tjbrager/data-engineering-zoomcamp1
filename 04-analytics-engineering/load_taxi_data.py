@@ -20,8 +20,8 @@ client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
 
 SERVICES = ["fhv", "green", "yellow"]
 YEARS = ["2019", "2020"]
-init_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/"
-MONTHS = [f"{i:02d}" for i in range(8, 13)]  # 01..12
+init_url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/"
+MONTHS = [f"{i:02d}" for i in range(0, 13)]  # 01..12
 DOWNLOAD_DIR = "."
 
 CHUNK_SIZE = 8 * 1024 * 1024
@@ -32,8 +32,10 @@ bucket = client.bucket(BUCKET_NAME)
 
 
 def download_file(month, year, service):
-    url = f"{init_url}{service}_tripdata_{year}-{month}.parquet"
-    file_path = os.path.join(DOWNLOAD_DIR, f"{service}_tripdata_{year}-{month}.parquet")
+    url = f"{init_url}{service}/{service}_tripdata_{year}-{month}.csv.gz"
+    file_path = os.path.join(
+        DOWNLOAD_DIR, f"{service}_tripdata_{year}-{month}-new.parquet"
+    )
 
     try:
         print(f"Downloading {url}...")

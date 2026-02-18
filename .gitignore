@@ -216,6 +216,7 @@ terrademo/keys
 *.env
 .terraform/
 *.parquet
+*.csv.gz
 
 # Terraform
 .terraform/
