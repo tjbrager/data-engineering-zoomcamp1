@@ -217,6 +217,7 @@ terrademo/keys
 .terraform/
 *.parquet
 *.csv.gz
+duckdb.db
 
 # Terraform
 .terraform/
@@ -267,3 +268,7 @@ terraform.rc
 # If you save your plan files locally, you can ignore them with a consistent naming convention
 # e.g., *.tfplan
 *.tfplan
+.bruin.yml
+logs/runs
+logs/*.log
+*.py[cod]

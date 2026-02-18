@@ -1,0 +1,8 @@
+name: athena-pipeline
+schedule: daily
+start_date: "2023-03-20"
+catchup: false
+default_connections:
+    athena: athena-default
+default:
+    type: athena.sql
