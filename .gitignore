@@ -218,6 +218,8 @@ terrademo/keys
 *.parquet
 *.csv.gz
 duckdb.db
+*.csv
+*.parquet.crc
 
 # Terraform
 .terraform/
